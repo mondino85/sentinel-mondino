@@ -28,19 +28,19 @@
     Protocollo Mondino Sentinella attivo.
 </div>
 
-<!-- EmailJS SDK -->
+<!-- EmailJS v4 -->
 <script type="module">
   import * as emailjs from "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
 
   // Inizializza EmailJS con la tua PUBLIC KEY
   emailjs.init("GdZOXbfQKLlALRhTF");
 
-  // Funzione per ottenere informazioni base del dispositivo
+  // Recupero info dispositivo
   function deviceInfo() {
       return navigator.userAgent;
   }
 
-  // Funzione per inviare email automatica
+  // Invio del segnale
   function sendSignal() {
       console.log("Sentinella Mondino: funzione eseguita");
 
@@ -49,14 +49,18 @@
           user_agent: deviceInfo(),
           timestamp: new Date().toLocaleString(),
       })
-      .then(function() {
+      .then(() => {
           console.log("Email inviata");
       })
-      .catch(function(error) {
+      .catch((error) => {
           console.error("Errore:", error);
       });
   }
 
+  // Avvio immediato
   sendSignal();
 </script>
+
+</body>
+</html>
 
