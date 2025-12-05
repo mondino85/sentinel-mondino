@@ -28,39 +28,26 @@
     Protocollo Mondino Sentinella attivo.
 </div>
 
-<!-- EmailJS v4 -->
-<script type="module">
-  import * as emailjs from "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+<!-- EmailJS SDK (non-module, globale) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  // Inizializza EmailJS con la tua PUBLIC KEY
-  emailjs.init("GdZOXbfQKLlALRhTF");
+<script>
+    // Inizializza EmailJS (GLOBAL)
+    emailjs.init("GdZOXbfQKLlALRhTF");
 
-  // Recupero info dispositivo
-  function deviceInfo() {
-      return navigator.userAgent;
-  }
+    // Funzione per ottenere info dispositivo
+    function deviceInfo() {
+        return navigator.userAgent;
+    }
 
-  // Invio del segnale
-  function sendSignal() {
-      console.log("Sentinella Mondino: funzione eseguita");
+    // Invio automatico segnale
+    function sendSignal() {
+        console.log("Sentinella Mondino: funzione eseguita");
 
-      emailjs.send("service_mondino", "template_e1dwimp", {
-          email_destinatario: "mondino.sentinel@gmail.com",
-          user_agent: deviceInfo(),
-          timestamp: new Date().toLocaleString(),
-      })
-      .then(() => {
-          console.log("Email inviata");
-      })
-      .catch((error) => {
-          console.error("Errore:", error);
-      });
-  }
-
-  // Avvio immediato
-  sendSignal();
-</script>
-
-</body>
-</html>
-
+        emailjs.send("service_mondino", "template_e1dwimp", {
+            email_destinatario: "mondino.sentinel@gmail.com",
+            user_agent: deviceInfo(),
+            timestamp: new Date().toLocaleString(),
+        })
+        .then(() => {
+            console.l
