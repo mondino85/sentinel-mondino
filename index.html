@@ -23,40 +23,35 @@
 <body>
 
 <div class="msg">
-    Comunicazione ricevuta.  
-    <br>  
+    Comunicazione ricevuta.<br>
     Protocollo Mondino Sentinella attivo.
 </div>
 
-<!-- EmailJS SDK globale -->
+<!-- EmailJS v4 SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
-    // Inizializza EmailJS con la tua PUBLIC KEY
-    emailjs.init("htX2_6oDOj4VqH1pD");
+    // 1️⃣ Inizializza EmailJS con PUBLIC KEY
+    emailjs.init("GdZOXbfQKLlALRhTF");
 
+    // 2️⃣ Funzione di invio
+    function sendSignal() {
+        console.log("Inviando segnale Sentinella...");
 
-    // Recupero info dispositivo
-    function deviceInfo() {
-        return navigator.userAgent;
+        emailjs.send("service_qf5owhx", "template_e1dwimp", {
+            user_agent: navigator.userAgent,
+            timestamp: new Date().toLocaleString(),
+            test: "Funziona!"
+        })
+        .then(() => {
+            console.log("EMAIL INVIATA CON SUCCESSO!");
+        })
+        .catch((error) => {
+            console.error("ERRORE EMAILJS:", error);
+        });
     }
 
-    // Invio automatico segnale
-   function sendSignal() {
-    console.log("Test EmailJS...");
-
-    emailjs.send("service_mondino", "template_e1dwimp", {
-        test: "Funziona!"
-    })
-    .then(() => {
-        console.log("EMAIL INVIATA!");
-    })
-    .catch((error) => {
-        console.error("TEST ERRORE:", error);
-    });
-}
-
-
+    // 3️⃣ Avvia automaticamente
     sendSignal();
 </script>
 
