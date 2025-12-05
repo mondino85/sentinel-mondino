@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Active</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .msg {
+            font-size: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="msg">
+    Comunicazione ricevuta.  
+    <br>  
+    Protocollo Mondino Sentinella attivo.
+</div>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+<script>
+    (function() {
+        emailjs.init("user_XXXXXXXXXXXX"); 
+        // Questo ID lo inseriamo dopo quando configuriamo EmailJS
+    })();
+</script>
+
+<script>
+    // Funzione per ottenere informazioni base del dispositivo
+    function deviceInfo() {
+        return navigator.userAgent;
+    }
+
+    // Funzione per inviare email automatica
+    function sendSignal() {
+        emailjs.send("service_mondino", "template_signal", {
+            email_destinatario: "mondino.sentinel@gmail.com",
+            user_agent: deviceInfo(),
+            timestamp: new Date().toLocaleString(),
+        })
+        .then(function() {
+            console.log("Segnale inviato a Mondino");
+        }, function(error) {
+            console.error("Errore: ", error);
+        });
+    }
+
+    // Avvia invio segnale
+    sendSignal();
+</script>
+
+</body>
+</html>
