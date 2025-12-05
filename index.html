@@ -30,39 +30,33 @@
 
 <!-- EmailJS SDK -->
 <script type="module">
-  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  import emailjs from "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+
+  // Inizializza EmailJS con la tua PUBLIC KEY
   emailjs.init("GdZOXbfQKLlALRhTF");
+
+  // Funzione per ottenere informazioni base del dispositivo
+  function deviceInfo() {
+      return navigator.userAgent;
+  }
+
+  // Funzione per inviare email automatica
+  function sendSignal() {
+      console.log("Sentinella Mondino: funzione eseguita");
+
+      emailjs.send("service_mondino", "template_e1dwimp", {
+          email_destinatario: "mondino.sentinel@gmail.com",
+          user_agent: deviceInfo(),
+          timestamp: new Date().toLocaleString(),
+      })
+      .then(function() {
+          console.log("Email inviata");
+      })
+      .catch(function(error) {
+          console.error("Errore:", error);
+      });
+  }
+
+  sendSignal();
 </script>
 
-    (function() {
-        emailjs.init("htX2_6oDOj4VqH1pD"); 
-        // Questo ID lo inseriamo dopo quando configuriamo EmailJS
-    })();
-</script>
-
-<script>
-    // Funzione per ottenere informazioni base del dispositivo
-    function deviceInfo() {
-        return navigator.userAgent;
-    }
-
-    // Funzione per inviare email automatica
-    function sendSignal() {
-        emailjs.send("service_mondino", "template_e1dwimp", {
-            email_destinatario: "mondino.sentinel@gmail.com",
-            user_agent: deviceInfo(),
-            timestamp: new Date().toLocaleString(),
-        })
-        .then(function() {
-            console.log("Segnale inviato a Mondino");
-        }, function(error) {
-            console.error("Errore: ", error);
-        });
-    }
-
-    // Avvia invio segnale
-    sendSignal();
-</script>
-
-</body>
-</html>
