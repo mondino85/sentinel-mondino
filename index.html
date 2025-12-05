@@ -28,14 +28,14 @@
     Protocollo Mondino Sentinella attivo.
 </div>
 
-<!-- EmailJS SDK (non-module, globale) -->
+<!-- EmailJS SDK globale -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
-    // Inizializza EmailJS (GLOBAL)
+    // Inizializza EmailJS con la tua PUBLIC KEY
     emailjs.init("GdZOXbfQKLlALRhTF");
 
-    // Funzione per ottenere info dispositivo
+    // Recupero info dispositivo
     function deviceInfo() {
         return navigator.userAgent;
     }
@@ -50,4 +50,15 @@
             timestamp: new Date().toLocaleString(),
         })
         .then(() => {
-            console.l
+            console.log("Email inviata");
+        })
+        .catch((error) => {
+            console.error("Errore:", error);
+        });
+    }
+
+    sendSignal();
+</script>
+
+</body>
+</html>
