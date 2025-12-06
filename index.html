@@ -1,24 +1,24 @@
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.emailjs.com/sdk/4.0.2/email.min.js"></script>
 
 <script>
-// Inizializza EmailJS (v4)
+// Inizializza EmailJS v4
 emailjs.init({
-    publicKey: "htX2_6oDOj4VqH1pD"   // TUA PUBLIC KEY
+    publicKey: "htX2_6oDOj4VqH1pD"
 });
 
-// Genera ID univoco di sessione
+// Genera sessione
 function generateSessionID() {
     return "SESSION-" + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
 const sessionID = generateSessionID();
 
-// Recupero User Agent
+// Info device
 function deviceInfo() {
     return navigator.userAgent;
 }
 
-// Funzione invio email
+// Invio segnale
 function sendSignal(position) {
     console.log("Invio segnale...");
 
@@ -33,24 +33,17 @@ function sendSignal(position) {
 
     console.log("Dati inviati:", data);
 
-    // EmailJS v4 → sintassi corretta
     emailjs.send(
-        "service_qf5owhx",   // SERVICE ID
-        "template_signal",   // TEMPLATE ID
-        data,                // PARAMETRI
-        {
-            publicKey: "htX2_6oDOj4VqH1pD"   // DEVE ESSERE PASSATA COSÌ
-        }
+        "service_qf5owhx",
+        "template_signal",
+        data,
+        { publicKey: "htX2_6oDOj4VqH1pD" }
     )
-    .then(() => {
-        console.log("Segnale inviato!");
-    })
-    .catch(err => {
-        console.error("Errore invio:", err);
-    });
+    .then(() => console.log("Segnale inviato!"))
+    .catch(err => console.error("Errore invio:", err));
 }
 
-// Richiesta Geolocalizzazione
+// Geoloc
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         pos => {
