@@ -15,9 +15,9 @@ function deviceInfo() {
     return navigator.userAgent;
 }
 
-// Funzione principale
+// Funzione di invio email
 function sendSignal(position) {
-    console.log("Invio segnale via EmailJS...");
+    console.log("Invio segnale...");
 
     const data = {
         session_id: sessionID,
@@ -28,17 +28,22 @@ function sendSignal(position) {
         accuracy: position?.coords?.accuracy || "N/A"
     };
 
+    console.log("Dati inviati:", data);
+
     emailjs.send("service_qf5owhx", "template_signal", data)
         .then(() => console.log("Segnale inviato!"))
         .catch(err => console.error("Errore invio:", err));
 }
 
-// Richiesta geolocalizzazione
+// GEO: richiede posizione
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-        pos => sendSignal(pos),
+        pos => {
+            console.log("Posizione ottenuta:", pos);
+            sendSignal(pos);
+        },
         err => {
-            console.warn("Geolocalizzazione negata o non disponibile.");
+            console.warn("Geolocalizzazione negata:", err);
             sendSignal(null);
         }
     );
