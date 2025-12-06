@@ -1,12 +1,16 @@
+// ===============================
+// SENTINELLA MONDINO v1.0
+// ===============================
+
 // Chiave AES scelta da te
 const CHIAVE_AES = "Sentinella-Mondino-Key-2025";
 
-// Funzione cifratura
+// Funzione che cifra i dati in AES-256
 function cifraDatiAES(dati) {
     return CryptoJS.AES.encrypt(JSON.stringify(dati), CHIAVE_AES).toString();
 }
 
-// Raccolta dati
+// Raccolta dati di base
 function raccogliDati() {
     const dati = {
         userAgent: navigator.userAgent,
@@ -18,27 +22,31 @@ function raccogliDati() {
     return dati;
 }
 
-// Invia dati a EmailJS
+// Invio dei dati cifrati a EmailJS
 function inviaDati(datiCifrati) {
-    emailjs.init({ publicKey: "htX2_6oDOj4VqH1pD" });
 
-    emailjs.send("service_m1082n9", "template_72w2xih", {
+    // Inizializzazione EmailJS
+    emailjs.init({
+        publicKey: "htX2_6oDOj4VqH1pD"
+    });
+
+    emailjs.send("service_qf5owhx", "template_e1dwimp", {
         payload: datiCifrati
     })
     .then(() => {
-        console.log("Segnale inviato.");
+        console.log("Segnale inviato correttamente.");
     })
     .catch((err) => {
-        console.error("Errore invio:", err);
+        console.error("Errore durante l'invio:", err);
     });
 }
 
-// Processo completo
+// Avvio completo della Sentinella
 function attivaSentinella() {
     const dati = raccogliDati();
     const cifrati = cifraDatiAES(dati);
     inviaDati(cifrati);
 }
 
-// Attivazione immediata
+// Attivazione immediata all'apertura della pagina
 attivaSentinella();
