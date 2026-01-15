@@ -17,7 +17,8 @@ function raccogliDatiBase() {
         userAgent: navigator.userAgent,
         lingua: navigator.language,
         timestamp: new Date().toISOString(),
-        sessionId: crypto.randomUUID()
+        sessionId: 'sess-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10)
+
     };
 }
 
